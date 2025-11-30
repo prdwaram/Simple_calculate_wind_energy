@@ -1,0 +1,54 @@
+
+I want you to build a SINGLE-PURPOSE WEBSITE that solves ONE tiny, annoying problem:
+
+Creating clean, calculate wind energy and wind turbine energy as a freelancer without using complex tools like Excel or big accounting software. The user should be able to type in Wind turbine blade length, Air density, Wind Speed, Operation time, wind turbine efficiency and calculate wind energy and wind turbine energy.
+
+🔧 Functional Requirements:
+
+- Main goal: Let a freelancer quickly calculate wind energy and wind turbine energy.
+
+- Inputs:
+  - Freelancer details: Wind turbine blade length, Air density, Wind Speed, Operation time, wind turbine efficiency
+
+- Outputs:
+  - A structured calculated wind energy and wind turbine energy preview with:
+    - All details filled in
+    - calculated wind energy and wind turbine energy
+
+- Core logic:
+  - Calculate the wind turbine swept area using equation A = π * r^2 = π * Wind turbine blade length^2 
+  - Convert wind speed from [kph] to [m/s] by dividing the [kph] value to 3.6: v = 15 / 3.6 = 4.1667 m/s
+  - Air density p is 1.225 kilograms per cubic meter always p=1.225
+  - Convert the wind turbine operation time from [h] to [s] by multiplying the [h] value with 3600: t = 3 * 3600 = 10800 s
+  - Calculate the wind energy using equation: wind energy = (1/2) * A * p * v^3 * t
+  - Calculate the wind turbine energy using equation :  wind turbine energy = (wind turbine efficiency/100) * wind energy
+  - The unit of measurement of wind energy and wind turbine energy is joule
+  - The default unit of measurement for energy is Joule. If you want the result displayed in another unit, use the drop down list to choose and click the CALCULATE button again.
+
+- Extra features:
+  - Button to Calculate wind energy and wind turbine energy
+  - The default unit of measurement for wind energy and wind turbine energy is Joule. If you want the result displayed in another unit, use the drop down list 
+    contains kilojoules, gram calories, calories, kilocalories, watts hour, kilowatts hour, gigawatts hour to choose and click the CALCULATE button again.
+
+🧱 Tech Stack & Structure:
+- Single file: `index.html`
+- Semantic HTML
+- Responsive CSS (no frameworks)
+- Vanilla JS inside a `<script>` tag at the bottom
+- No external libraries
+
+🎨 UI/UX:
+- Single column layout on desktop: stacked on mobile.
+- Soft blue and gray color theme.
+- Highlight wind energy and wind turbine energy.
+
+🧪 UX Details:
+- Basic validation: show messages if required fields are empty when calculate.
+- Automatically update Air density value and allowed drop down select values is kilograms per cubic meter.
+- Pressing Enter in a line items should NOT calculate the form accidentally.
+
+📦 Output Format:
+- Return ONLY the full HTML code for `index.html` in one fenced code block, ready to open in a browser.
+- Include comments for the main layout and calculation logic.
+
+Now, build this app.

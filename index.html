@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Energy Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #34495e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+        }
+
+        .unit-label {
+            color: #7f8c8d;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            border-left: 4px solid #c33;
+        }
+
+        /* Results Section */
+        .results {
+            margin-top: 30px;
+            padding: 24px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .results h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .result-item {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            color: #7f8c8d;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .result-value {
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .highlight .result-label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .highlight .result-value {
+            color: white;
+            font-size: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Wind Energy Calculator</h1>
+        <p class="subtitle">Calculate wind energy and turbine output quickly</p>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <form id="calculatorForm">
+            <!-- Wind Turbine Blade Length -->
+            <div class="form-group">
+                <label for="bladeLength">Wind Turbine Blade Length</label>
+                <input type="number" id="bladeLength" step="0.01" min="0" placeholder="Enter blade length">
+                <div class="unit-label">meters (m)</div>
+            </div>
+
+            <!-- Air Density -->
+            <div class="form-group">
+                <label for="airDensity">Air Density</label>
+                <input type="number" id="airDensity" value="1.225" step="0.001" min="0" readonly>
+                <div class="unit-label">kilograms per cubic meter (kg/m³)</div>
+            </div>
+
+            <!-- Wind Speed -->
+            <div class="form-group">
+                <label for="windSpeed">Wind Speed</label>
+                <input type="number" id="windSpeed" step="0.1" min="0" placeholder="Enter wind speed">
+                <div class="unit-label">kilometers per hour (kph)</div>
+            </div>
+
+            <!-- Operation Time -->
+            <div class="form-group">
+                <label for="operationTime">Operation Time</label>
+                <input type="number" id="operationTime" step="0.1" min="0" placeholder="Enter operation time">
+                <div class="unit-label">hours (h)</div>
+            </div>
+
+            <!-- Wind Turbine Efficiency -->
+            <div class="form-group">
+                <label for="efficiency">Wind Turbine Efficiency</label>
+                <input type="number" id="efficiency" step="0.1" min="0" max="100" placeholder="Enter efficiency">
+                <div class="unit-label">percentage (%)</div>
+            </div>
+
+            <!-- Energy Unit Selection -->
+            <div class="form-group">
+                <label for="energyUnit">Energy Unit</label>
+                <select id="energyUnit">
+                    <option value="joules">Joules (J)</option>
+                    <option value="kilojoules">Kilojoules (kJ)</option>
+                    <option value="gramCalories">Gram Calories (cal)</option>
+                    <option value="calories">Calories (Cal)</option>
+                    <option value="kilocalories">Kilocalories (kcal)</option>
+                    <option value="wattsHour">Watts Hour (Wh)</option>
+                    <option value="kilowattsHour">Kilowatts Hour (kWh)</option>
+                    <option value="gigawattsHour">Gigawatts Hour (GWh)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="calculate-btn">CALCULATE</button>
+        </form>
+
+        <!-- Results Section -->
+        <div class="results" id="results">
+            <h2>📊 Calculation Results</h2>
+            
+            <div class="result-item">
+                <div class="result-label">Swept Area</div>
+                <div class="result-value" id="sweptArea">-</div>
+            </div>
+
+            <div class="result-item">
+                <div class="result-label">Wind Speed (m/s)</div>
+                <div class="result-value" id="windSpeedMS">-</div>
+            </div>
+
+            <div class="result-item">
+                <div class="result-label">Operation Time (seconds)</div>
+                <div class="result-value" id="operationTimeS">-</div>
+            </div>
+
+            <div class="result-item highlight">
+                <div class="result-label">Wind Energy</div>
+                <div class="result-value" id="windEnergy">-</div>
+            </div>
+
+            <div class="result-item highlight">
+                <div class="result-label">Wind Turbine Energy</div>
+                <div class="result-value" id="turbineEnergy">-</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get form elements
+        const form = document.getElementById('calculatorForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsSection = document.getElementById('results');
+
+        // Prevent form submission on Enter key in input fields
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Form submission handler
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateEnergy();
+        });
+
+        function calculateEnergy() {
+            // Hide previous errors and results
+            errorMessage.style.display = 'none';
+            errorMessage.textContent = '';
+
+            // Get input values
+            const bladeLength = parseFloat(document.getElementById('bladeLength').value);
+            const airDensity = parseFloat(document.getElementById('airDensity').value);
+            const windSpeedKph = parseFloat(document.getElementById('windSpeed').value);
+            const operationTimeH = parseFloat(document.getElementById('operationTime').value);
+            const efficiency = parseFloat(document.getElementById('efficiency').value);
+            const energyUnit = document.getElementById('energyUnit').value;
+
+            // Validation
+            const errors = [];
+            if (!bladeLength || bladeLength <= 0) errors.push('Wind turbine blade length is required and must be greater than 0');
+            if (!airDensity || airDensity <= 0) errors.push('Air density is required and must be greater than 0');
+            if (!windSpeedKph || windSpeedKph <= 0) errors.push('Wind speed is required and must be greater than 0');
+            if (!operationTimeH || operationTimeH <= 0) errors.push('Operation time is required and must be greater than 0');
+            if (!efficiency || efficiency <= 0 || efficiency > 100) errors.push('Wind turbine efficiency is required and must be between 0 and 100');
+
+            if (errors.length > 0) {
+                errorMessage.textContent = errors.join('. ');
+                errorMessage.style.display = 'block';
+                resultsSection.style.display = 'none';
+                return;
+            }
+
+            // Calculate swept area: A = π * r²
+            const sweptArea = Math.PI * Math.pow(bladeLength, 2);
+
+            // Convert wind speed from kph to m/s
+            const windSpeedMS = windSpeedKph / 3.6;
+
+            // Convert operation time from hours to seconds
+            const operationTimeS = operationTimeH * 3600;
+
+            // Calculate wind energy: E = (1/2) * A * ρ * v³ * t
+            const windEnergyJoules = 0.5 * sweptArea * airDensity * Math.pow(windSpeedMS, 3) * operationTimeS;
+
+            // Calculate turbine energy: E_turbine = (efficiency/100) * E_wind
+            const turbineEnergyJoules = (efficiency / 100) * windEnergyJoules;
+
+            // Convert to selected unit
+            const windEnergyConverted = convertEnergy(windEnergyJoules, energyUnit);
+            const turbineEnergyConverted = convertEnergy(turbineEnergyJoules, energyUnit);
+            const unitSymbol = getUnitSymbol(energyUnit);
+
+            // Display results
+            document.getElementById('sweptArea').textContent = sweptArea.toFixed(2) + ' m²';
+            document.getElementById('windSpeedMS').textContent = windSpeedMS.toFixed(4) + ' m/s';
+            document.getElementById('operationTimeS').textContent = operationTimeS.toFixed(0) + ' s';
+            document.getElementById('windEnergy').textContent = formatNumber(windEnergyConverted) + ' ' + unitSymbol;
+            document.getElementById('turbineEnergy').textContent = formatNumber(turbineEnergyConverted) + ' ' + unitSymbol;
+
+            resultsSection.style.display = 'block';
+        }
+
+        // Energy conversion function
+        function convertEnergy(joules, unit) {
+            const conversions = {
+                'joules': 1,
+                'kilojoules': 0.001,
+                'gramCalories': 0.239006,
+                'calories': 0.000239006,
+                'kilocalories': 0.000000239006,
+                'wattsHour': 0.000277778,
+                'kilowattsHour': 0.000000277778,
+                'gigawattsHour': 0.000000000000277778
+            };
+            return joules * conversions[unit];
+        }
+
+        // Get unit symbol
+        function getUnitSymbol(unit) {
+            const symbols = {
+                'joules': 'J',
+                'kilojoules': 'kJ',
+                'gramCalories': 'cal',
+                'calories': 'Cal',
+                'kilocalories': 'kcal',
+                'wattsHour': 'Wh',
+                'kilowattsHour': 'kWh',
+                'gigawattsHour': 'GWh'
+            };
+            return symbols[unit];
+        }
+
+        // Format large numbers with commas
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return num.toExponential(2);
+            }
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+    </script>
+</body>
+</html>
